@@ -72,7 +72,7 @@ def parse_multipart(request):
     # Save file locally
     file.save(file_path)
 
-    # image pre-processing
+    # Image pre-processing
     preprocessing(file_path)
 
     # Upload file to Google Cloud Storage bucket
