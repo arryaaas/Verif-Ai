@@ -46,7 +46,7 @@ def upload_blob(file_path):
 
 @functions_framework.http
 def parse_multipart(request):
-    """ Parses a 'multipart/form-data' upload request """
+    """ Parses a multipart/form-data upload request """
 
     # Check if the request method is not post
     if request.method != "POST":
