@@ -31,7 +31,7 @@ def preprocessing(file_path):
     cv2.imwrite(file_path, thresh)
 
 def upload_blob(file_path):
-    """ Uploads a file to the bucket """
+    """ Helper function that uploads files to the bucket """
 
     bucket_name = os.environ["BUCKET_NAME"]
     destination_blob = str(uuid.uuid4())
@@ -42,7 +42,7 @@ def upload_blob(file_path):
 
     blob.upload_from_filename(file_path)
 
-    print("File {} uploaded to {}".format(file_path, destination_blob))
+    print(f"File {file_path} uploaded to {destination_blob}")
 
 @functions_framework.http
 def parse_multipart(request):
