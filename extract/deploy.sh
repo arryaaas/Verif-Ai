@@ -1,4 +1,4 @@
-gcloud functions deploy ocr-upload \
+gcloud functions deploy ocr-extract \
   --runtime python39 \
   --trigger-resource YOUR_TRIGGER_BUCKET_NAME \
   --trigger-event google.storage.object.finalize \
