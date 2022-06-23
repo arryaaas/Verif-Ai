@@ -42,7 +42,7 @@ def collect_details(text):
 
     for i in text:
         i = re.sub("|".join(KEY_PATTERN), "", i, flags=re.IGNORECASE)
-        i = re.sub("|".join(PUNC_PATTERN), "", i)
+        i = re.sub("|".join(PUNC_PATTERN), "", i).strip()
 
         if i != "":
             value.append(i)
