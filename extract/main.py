@@ -3,10 +3,10 @@ import json
 from google.cloud import vision
 from google.cloud import pubsub_v1
 
-def validate_event_data(event, param):
-    """ Helper function that validates event data """
+def validate_message(message, param):
+    """ Helper function that validates messages """
 
-    value = event.get(param)
+    value = message.get(param)
 
     if not value:
         raise ValueError(
@@ -29,10 +29,11 @@ def publish_message(message):
     future = publisher.publish(topic_path, data=message_data)
     future.result()
 
+    # Print message to logs
     print(f"Published message to {topic_path}")
 
 def detect_text(bucket, filename):
-    """ Helper function that detects text in images using Google Vision API """
+    """ Helper function that detects text in images using Cloud Vision API """
 
     print(f"Looking for text in image {filename}")
 
@@ -53,26 +54,31 @@ def detect_text(bucket, filename):
     else:
         text = ""
 
-    print(f"Extracted text from image {filename}: \n{text}")
+    # Print message to logs
+    print(f"Extracted text {text} from image {filename}")
+
+    return text
+
+# Entry point function
+def process_image(event, context):
+    """ Background Cloud Function to be triggered by Cloud Storage """
+
+    # Print message to logs
+    print(f"This Function was triggered by {context.event_type} event")
+
+    # Check if event contains data like bucket and name
+    bucket = validate_message(event, "bucket")
+    name = validate_message(event, "name")
+
+    # Text detection using Cloud Vision API
+    text = detect_text(bucket, name)
 
     message = {
-        "text": text,
-        "filename": filename,
+        "text": text
     }
 
+    # Publish message to Cloud Pub/Sub topics
     publish_message(message)
 
-def process_image(data, context):
-    """ Reads an uploaded image file from Google Cloud Storage """
-
-    # Shows the type of event that occurred
-    print(f"Event type: {context.event_type}")
-
-    # Check if there is a bucket and name in the event data
-    bucket = validate_event_data(data, "bucket")
-    name = validate_event_data(data, "name")
-
-    # Detect text in image
-    detect_text(bucket, name)
-
-    print(f"File {name} processed")
+    # Print message to logs
+    print("Cloud Functions (Cloud Storage Triggers) done!")
