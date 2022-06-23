@@ -42,8 +42,10 @@ def upload_blob(file_path):
 
     blob.upload_from_filename(file_path)
 
+    # Print message to logs
     print(f"File {file_path} uploaded to {destination_blob}")
 
+# Entry point function
 @functions_framework.http
 def parse_multipart(request):
     """ Parses a multipart/form-data upload request """
@@ -58,8 +60,7 @@ def parse_multipart(request):
 
     file = request.files.get("file")
 
-    # If the user does not select a file or submits an 
-    # empty file without a filename
+    # If the user does not select a file or submits an empty file without a filename
     if file.filename == "":
         return "No selected file"
 
@@ -75,10 +76,10 @@ def parse_multipart(request):
     # Image pre-processing
     preprocessing(file_path)
 
-    # Upload file to Google Cloud Storage bucket
+    # Upload file to Cloud Storage bucket
     upload_blob(file_path)
 
     # Clear temporary directory
     os.remove(file_path)
 
-    return "Done!"
+    return "Cloud Functions (HTTP Triggers) done!"
