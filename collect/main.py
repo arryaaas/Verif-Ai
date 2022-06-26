@@ -3,19 +3,7 @@ import json
 import base64
 from google.cloud import firestore
 
-KEY_PATTERN = [
-    "nik", "nama", "tempat/tgl lahir", "jenis kelamin", "gol. darah",
-    "alamat", "rt/rw", "kel/desa", "kecamatan", "agama",
-    "status perkawinan", "pekerjaan", "kewarganegaraan", "berlaku hingga"
-]
-
-PUNC_PATTERN = [
-    ";", ":"
-]
-
-STOP_CONDITION = [
-    "LAKI-LAKI", "PEREMPUAN"
-]
+PATTERN = "nik|nama|tempat|tanggal|tgl|lahir|jenis|kelamin|gol|darah"
 
 def validate_message(message, param):
     """ Helper function that validate message """
@@ -30,36 +18,28 @@ def validate_message(message, param):
 
     return value
 
-def collect_details(text):
-    """ Helper function that collect details from extracted text """
+def collect_details(text_annotations_group):
+    """ Helper function that collect details from text annotations group """
 
     key = [
         "province", "district", "id_number", 
         "name", "place_date_of_birth", "gender"
     ]
     value = []
-    text = text.split("\n")
 
-    for i in text:
-        i = re.sub("|".join(KEY_PATTERN), "", i, flags=re.IGNORECASE)
-        i = re.sub("|".join(PUNC_PATTERN), "", i).strip()
-
-        if i != "":
-            value.append(i)
-
-        # Collect details only up to gender
-        if i in STOP_CONDITION:
-            break
-
-    # Concatenate names if the values consist of two lines
-    if len(value) == 7:
-        value[3] = f"{value[3]} {value[4]}"
-        value.pop(4)
+    for group in text_annotations_group[:6]:
+        text = map(lambda z: z["description"], group)
+        text = " ".join(text)
+        text = re.sub(PATTERN, "", text, flags=re.IGNORECASE)
+        text = text.replace(":", "").replace("/", "").replace(".", "") \
+                .replace(" , ", ", ").replace(" - ", "-").strip()
+        value.append(text)
 
     details = dict(zip(key, value))
 
     # Print message to logs
-    print(f"Collect details {details} from extracted text")
+    print("Collect details from text annotations group")
+    print(details)
 
     return details 
 
@@ -67,11 +47,11 @@ def save_details(details):
     """" Helper function that save details to Cloud Firestore """
 
     db = firestore.Client()
-    doc_ref = db.collection('identity_card').document()
+    doc_ref = db.collection("identity_card").document()
     doc_ref.set(details)
 
     # Print message to logs
-    print(f"Saving details to document {doc_ref.id} in identity card collection")
+    print(f"Save details to document {doc_ref.id} in identity card collection")
 
 # Entry point function
 def process_message(event, context):
@@ -87,10 +67,10 @@ def process_message(event, context):
         raise ValueError("Data sector is missing in the Pub/Sub message")
 
     # Check if message contains data like text
-    text = validate_message(message, "text")
+    text_annotations_group = validate_message(message, "text_annotations_group")
 
     # Collect details from text
-    details = collect_details(text)
+    details = collect_details(text_annotations_group)
 
     # Save details to Cloud Firestore
     save_details(details)
