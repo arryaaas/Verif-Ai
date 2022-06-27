@@ -4,7 +4,7 @@ Optical Character Recognition (OCR) to extract information on Indonesian Identit
 
 ## Architecture
 
-![](cloud-architecture-diagram.png)
+![](architecture.png)
 
 The data flow in the application involves several steps:
 1. Upload photo via HTTP request. A Cloud Function is triggered, which uses the OpenCV to apply threshold on photo and upload it to Cloud Storage.
