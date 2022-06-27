@@ -23,7 +23,7 @@ Pre-requisites:
 
 Preparing the application:
 
-1. Enable Cloud Build, Cloud Functions, Cloud Pub/Sub, Cloud Storage, and Cloud Vision APIs.
+1. Enable Cloud Build, Cloud Functions, Cloud Pub/Sub, Cloud Storage, Cloud Firestore, and Cloud Vision APIs.
 
     ```shell
     gcloud services enable \
@@ -31,6 +31,7 @@ Preparing the application:
       cloudfunctions.googleapis.com \
       pubsub.googleapis.com \
       storage.googleapis.com \
+      firestore.googleapis.com \
       vision.googleapis.com
     ```
 
@@ -46,7 +47,13 @@ Preparing the application:
     gcloud pubsub topics create YOUR_RESULT_TOPIC_NAME
     ```
 
-4. Clone this repository.
+4. Create a Cloud Firestore database to save the details.
+
+    ```shell
+    gcloud firestore databases create --region=REGION
+    ```
+
+5. Clone this repository.
 
     ```shell
     https://github.com/arryaaas/verifai.git
