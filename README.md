@@ -1,4 +1,4 @@
-## VerifAI
+## Verif AI
 
 Optical Character Recognition (OCR) to extract information on Indonesian Identity Card (KTP) using Google Cloud Platform.
 
@@ -56,7 +56,7 @@ Preparing the application:
 5. Clone this repository.
 
     ```shell
-    https://github.com/arryaaas/verifai.git
+    https://github.com/arryaaas/Verif-Ai.git
     ```
 
 Deploying the functions:
@@ -64,8 +64,8 @@ Deploying the functions:
 1. Deploy the upload function with a HTTP trigger.
 
     ```shell
-    cd ~/verifai/upload
-    gcloud functions deploy verifai-upload \
+    cd ~/Verif-Ai/upload
+    gcloud functions deploy verif-ai-upload \
       --runtime python39 \
       --trigger-http \
       --entry-point parse_multipart \
@@ -76,8 +76,8 @@ Deploying the functions:
 2. Deploy the extract function with a Cloud Storage trigger.
 
     ```shell
-    cd ~/verifai/extract
-    gcloud functions deploy verifai-extract \
+    cd ~/Verif-Ai/extract
+    gcloud functions deploy verif-ai-extract \
       --runtime python39 \
       --trigger-resource YOUR_TRIGGER_BUCKET_NAME \
       --trigger-event google.storage.object.finalize \
@@ -88,8 +88,8 @@ Deploying the functions:
 3. Deploy the collect function with a Cloud Pub/Sub trigger.
 
     ```shell
-    cd ~/verifai/collect
-    gcloud functions deploy verifai-collect \
+    cd ~/Verif-Ai/collect
+    gcloud functions deploy verif-ai-collect \
       --runtime python39 \
       --trigger-topic YOUR_RESULT_TOPIC_NAME \
       --entry-point process_message
