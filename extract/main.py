@@ -21,7 +21,7 @@ def publish_message(message):
     """ Helper function that publishes extraction results to Pub/Sub topics """
 
     project_id = os.environ["GCP_PROJECT"]
-    topic_name = os.environ["EXTRACT_TOPIC"]
+    topic_name = os.environ["RESULT_TOPIC"]
 
     message_data = json.dumps(message).encode("utf-8")
 
